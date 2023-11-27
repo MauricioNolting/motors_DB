@@ -30,7 +30,8 @@ class RepairsServices {
     static async findOneCompleted(id){
         return await Repairs.findOne({
             where: {
-                id: id
+                id: id,
+                status: "completed"
             }
         })
     }

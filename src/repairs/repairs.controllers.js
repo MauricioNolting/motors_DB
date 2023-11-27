@@ -49,9 +49,10 @@ exports.findAll = async(req, res) => {
      const { id } = req.params;
      const status = "completed"
      
+    
+
      const repairsFindOne = await RepairsServices.findOneCompleted(id)
 
-  
 
     if (repairsFindOne.status === "completed"){
         return res.status(404).json({
@@ -67,6 +68,15 @@ exports.findAll = async(req, res) => {
         })
     }
   
+    const findOne = await RepairsServices.findOne(id)
+    if (!findOne){
+        return res.status(404).json({
+            status: 'error',
+            message: `User id: ${id} not found`
+        })
+    }
+
+
    const repairsUpdate = await RepairsServices.update(repairsFindOne, { status })
   
      return res.status(200).json({
@@ -78,18 +88,34 @@ exports.findAll = async(req, res) => {
   
   
    exports.deleteUser = async(req, res) => {
-     const { id } = req.params;
-  
-     const repairsFindOne = await RepairsServices.findOne(id)
-  
-     if (!repairsFindOne) {
-       return res.status(404).json({
-           status: "error",
-           message: `User id: ${id} not found`
-       })
-   }
-  
-      await RepairsServices.delete(userFindOne)
-    
-     return res.status(204).json(null)
+    const { id } = req.params;
+
+const repairsFindCompleted = await RepairsServices.findOneCompleted(id)
+if (repairsFindCompleted) {
+    return res.status(404).json({
+        status: "error",
+        message: `User id: ${id} already completed`
+    })
 }
+
+
+  const repairsFindOne = await RepairsServices.findOne(id)
+
+  if (!repairsFindOne) {
+    return res.status(404).json({
+        status: "error",
+        message: `User id: ${id} not found`
+    })
+}
+
+   await RepairsServices.delete(repairsFindOne)
+  
+  return res.status(204).json(null)
+}
+   
+
+   
+
+
+   
+

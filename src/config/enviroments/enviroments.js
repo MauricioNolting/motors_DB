@@ -1,9 +1,9 @@
-require('dotenv').config()
+import dotenv from 'dotenv';
+dotenv.config();
 
-const env = require('env-var')
+import envVar from 'env-var';
 
-exports.envs = {
-    PORT: env.get('PORT').required().asPortNumber(),
-    DB_URI: env.get('DB_URI').required().asString()
-}
-
+export const envs = {
+  PORT: envVar.get('PORT').required().asPortNumber(),
+  DB_URI: envVar.get('DB_URI').required().asString(),
+};

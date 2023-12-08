@@ -1,13 +1,10 @@
-const express = require('express')
+import express from 'express';
+export const router = express.Router();
 
-const router = express.Router()
+import repairsControllers from './repairs.controllers.js';
 
-const repairsControllers = require('./repairs.controllers')
-
-router.get("/repairs/", repairsControllers.findAll)
-router.post("/repairs/", repairsControllers.create) 
-router.get("/repairs/:id", repairsControllers.findOne)
-router.patch("/repairs/:id", repairsControllers.update)
-router.delete("/repairs/:id", repairsControllers.deleteUser)
-
-module.exports = router
+router.get('/', repairsControllers.findAll);
+router.post('/', repairsControllers.create);
+router.get('/:id', repairsControllers.findOne);
+router.patch('/:id', repairsControllers.update);
+router.delete('/:id', repairsControllers.deleteUser);

@@ -1,3 +1,4 @@
+import { AppError } from '../../common/utils/errors/appError.js';
 import { validatePartialUser, validateUser } from './user.schema.js';
 import UsersServices from './user.service.js';
 
@@ -96,11 +97,7 @@ const update = async (req, res) => {
       userUpdate,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 'fail',
-      message: error,
-    });
+    return new AppError(error, 500);
   }
 };
 

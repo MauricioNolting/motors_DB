@@ -1,5 +1,5 @@
-import { router as repairsRouter } from '../repairs/repairs.routes.js';
-import { router as usersRouter } from '../user/user.routes.js';
+import { router as repairsRouter } from '../modules/repairs/repairs.routes.js';
+import { router as usersRouter } from '../modules/user/user.routes.js';
 
 import express from 'express';
 

@@ -17,7 +17,6 @@ class RepairsServices {
     return await Repairs.findOne({
       where: {
         id: id,
-        status: 'pending',
       },
     });
   }

@@ -1,97 +1,123 @@
+import { validatePartialUser, validateUser } from './user.schema.js';
 import UsersServices from './user.service.js';
 
 const findAll = async (req, res) => {
-  const findAllUsers = await UsersServices.findAll();
+  try {
+    const findAllUsers = await UsersServices.findAll();
 
-  return res.status(200).json({
-    findAllUsers,
-  });
+    return res.status(200).json({
+      findAllUsers,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'error',
+      message: error,
+    });
+  }
 };
 
 const create = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  try {
+    const { hasError, errorMessages, userData } = validateUser(req.body);
+    if (hasError) {
+      return res.status(422).json({
+        status: 'error',
+        message: errorMessages,
+      });
+    }
+    console.log(userData.name);
 
-  const existUserName = await UsersServices.findOneNameOrEmail(name);
-  if (existUserName) {
-    return res.status(409).json({
-      status: 'error',
-      message: `The name: ${name} already exists`,
+    // const { name, email, password, role } = req.body;
+
+    const existUserName = await UsersServices.findOneNameOrEmail(userData.name);
+    if (existUserName) {
+      return res.status(409).json({
+        status: 'error',
+        message: `The name: ${userData.name} already exists`,
+      });
+    }
+
+    const existUserEmail = await UsersServices.findOneNameOrEmail(
+      userData.email
+    );
+    if (existUserEmail) {
+      return res.status(409).json({
+        status: 'error',
+        message: `The email: ${userData.email} already exists`,
+      });
+    }
+
+    const newUser = await UsersServices.create(userData);
+
+    return res.status(201).json({
+      data: newUser,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'fail',
+      message: error,
     });
   }
-
-  const existUserEmail = await UsersServices.findOneNameOrEmail(email);
-  if (existUserEmail) {
-    return res.status(409).json({
-      status: 'error',
-      message: `The email: ${email} already exists`,
-    });
-  }
-
-  if (role !== 'client' && role !== 'employee') {
-    return res.status(404).json({
-      status: 'error',
-      message: `The role: ${role} is not found. The role has to be "client" or "employee"`,
-    });
-  }
-  const newUser = await UsersServices.create({ name, email, password, role });
-
-  return res.status(201).json({
-    data: newUser,
-  });
 };
 
 const findOne = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { user } = req;
 
-  const findOne = await UsersServices.findOne(id);
-
-  if (!findOne) {
-    return res.status(404).json({
-      status: 'error',
-      message: `User id: ${id} not found`,
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'fail',
+      message: error,
     });
   }
-
-  return res.status(200).json({
-    findOne,
-  });
 };
 
 const update = async (req, res) => {
-  const { id } = req.params;
-  const { name, email } = req.body;
-  const userFindOne = await UsersServices.findOne(id);
+  try {
+    const { user } = req;
 
-  if (!userFindOne) {
-    return res.status(404).json({
-      status: 'error',
-      message: `User id: ${id} not found`,
+    const { hasError, errorMessages, userData } = validatePartialUser(req.body);
+
+    if (hasError) {
+      return res.status(422).json({
+        status: 'error',
+        message: errorMessages,
+      });
+    }
+
+    const userUpdate = await UsersServices.update(user, userData);
+
+    return res.status(200).json({
+      message: 'method update(patch)',
+      userUpdate,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'fail',
+      message: error,
     });
   }
-
-  const userUpdate = await UsersServices.update(userFindOne, { name, email });
-
-  return res.status(200).json({
-    message: 'method update(patch)',
-    userUpdate,
-  });
 };
 
 const deleteUser = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { user } = req;
 
-  const userFindOne = await UsersServices.findOne(id);
+    await UsersServices.delete(user);
 
-  if (!userFindOne) {
-    return res.status(404).json({
+    return res.status(204).json(null);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
       status: 'error',
-      message: `User id: ${id} not found`,
+      message: error,
     });
   }
-
-  await UsersServices.delete(userFindOne);
-
-  return res.status(204).json(null);
 };
 
 export default {

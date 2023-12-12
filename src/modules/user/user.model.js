@@ -2,29 +2,36 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../../config/database/database.js';
 import { encryptedPassword } from '../../config/pluggins/encripted-password.pluggin.js';
 
-const Users = sequelize.define(
+export const Users = sequelize.define(
   'User',
   {
     id: {
       primaryKey: true,
       autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER(),
     },
     name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(),
       allowNull: false,
     },
     password: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(),
       allowNull: false,
     },
+    email: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+    },
+
     role: {
       type: DataTypes.ENUM('employee', 'client'),
       allowNull: false,
+      defaultValue: 'client',
+    },
+    passwordChangedAt: {
+      type: DataTypes.DATE(),
+      allowNull: true,
+      defaultValue: null,
     },
     status: {
       type: DataTypes.ENUM('avaible', 'unavaible'),
@@ -36,10 +43,8 @@ const Users = sequelize.define(
     hooks: {
       //antes de que se cree un registro. user es el registro que se va a crear
       beforeCreate: async (user) => {
-        user.password = await await encryptedPassword(user.password);
+        user.password = await encryptedPassword(user.password);
       },
     },
   }
 );
-
-export default Users;

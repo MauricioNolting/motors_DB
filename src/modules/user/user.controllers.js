@@ -1,6 +1,9 @@
 import { AppError } from '../../common/utils/errors/appError.js';
 import { catchAsync } from '../../common/utils/errors/catchAsync.js';
-import { verifyPassword } from '../../config/pluggins/encripted-password.pluggin.js';
+import {
+  encryptedPassword,
+  verifyPassword,
+} from '../../config/pluggins/encripted-password.pluggin.js';
 import { generateJWT } from '../../config/pluggins/generate-jwt.plugin.js';
 import {
   validateLogin,
@@ -133,6 +136,43 @@ const deleteUser = catchAsync(async (req, res, next) => {
   return res.status(204).json(null);
 });
 
+const changePassword = catchAsync(async (req, res, next) => {
+  //1. Obtener el usuario en session
+  const { sessionUser } = req;
+
+  //2. traer los dats de la req.body
+  const { currentPassword, newPassword } = req.body;
+
+  //3 Validar si la constrase;a acutal es igual a la nueva
+
+  if (currentPassword === newPassword) {
+    return next(new AppError('The passwords cannot be equal', 400));
+  }
+
+  //4 validar si la contrase;a actual es igual a la de base de datos
+  const isCorrectPassword = await verifyPassword(
+    currentPassword,
+    sessionUser.password
+  );
+
+  if (!isCorrectPassword) {
+    return next(new AppError('Incorrect email or password', 401));
+  }
+
+  //5. encripar la nueva contrase;a
+  const hashedNewPassword = await encryptedPassword(newPassword);
+
+  //6. actualizar la contrase;a
+  await UsersServices.update(sessionUser, {
+    password: hashedNewPassword,
+    passwordChangedAt: new Date(),
+  });
+
+  return res.status(200).json({
+    message: 'The user password was updated succesfully',
+  });
+});
+
 export default {
   findAll,
   create,
@@ -140,4 +180,5 @@ export default {
   update,
   deleteUser,
   login,
+  changePassword,
 };

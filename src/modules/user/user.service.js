@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import Users from './user.model.js';
+import { Users } from './user.model.js';
 
 class UsersServices {
   static async create(data) {

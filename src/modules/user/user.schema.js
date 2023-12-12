@@ -17,7 +17,6 @@ const userRegisterSchema = z.object({
     })
     .min(8, { message: 'Password is too short(8 min)' })
     .max(15, { message: 'Password is too long(15 max)' }),
-  role: z.enum(['employee', 'client']),
 });
 
 const loginUserSchema = z.object({

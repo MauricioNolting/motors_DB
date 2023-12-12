@@ -5,18 +5,18 @@ const Repairs = sequelize.define('Repair', {
   id: {
     primaryKey: true,
     autoIncrement: true,
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER(),
   },
   date: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(),
     allowNull: false,
   },
   motorsNumber: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(),
     allowNull: false,
   },
   description: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(),
     allowNull: false,
   },
   status: {
@@ -24,7 +24,7 @@ const Repairs = sequelize.define('Repair', {
     defaultValue: 'pending',
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER(),
     allowNull: false,
   },
 });

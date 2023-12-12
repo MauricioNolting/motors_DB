@@ -55,9 +55,43 @@ export const protect = catchAsync(async (req, res, next) => {
       new AppError('The owner of this token is not loger avaible', 401)
     );
   }
-  //5. pendiente....
+
+  //5. validar si el usuario cambio recienmenten su contrase;a (para que no se use un token viejo)
+  if (user.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      user.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    if (decoded.iat < changedTimeStamp) {
+      return next(
+        new AppError('User recently changed password, please login again')
+      );
+    }
+  }
 
   //6.  Adjuntar el usuario en session, el usuario en session es el dueno del token
-  req.sessionUser = user;
+  req.sessionUser = user; //! importante esto, porque asi se puede usar despues en actualizar algun dato del usuario n session, sacando de la req.sessionUser el usuario actual.
   next();
 });
+
+export const protectAcoountOwner = (req, res, next) => {
+  const { user, sessionUser } = req;
+
+  if (user.id !== sessionUser.id) {
+    return next(new AppError('You do not own whis account', 401));
+  }
+
+  next();
+};
+
+export const restictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.sessionUser.role)) {
+      return next(
+        new AppError('You dont have persmission to perfmo this action', 403)
+      );
+    }
+    next();
+  };
+};

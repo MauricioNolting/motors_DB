@@ -3,23 +3,23 @@ import { sequelize } from '../../config/database/database.js';
 import { encryptedPassword } from '../../config/pluggins/encripted-password.pluggin.js';
 
 export const Users = sequelize.define(
-  'User',
+  'user',
   {
     id: {
       primaryKey: true,
       autoIncrement: true,
-      type: DataTypes.INTEGER(),
+      type: DataTypes.INTEGER,
     },
     name: {
-      type: DataTypes.STRING(),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     password: {
-      type: DataTypes.STRING(),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     email: {
-      type: DataTypes.STRING(),
+      type: DataTypes.STRING,
       allowNull: false,
     },
 
@@ -29,7 +29,7 @@ export const Users = sequelize.define(
       defaultValue: 'client',
     },
     passwordChangedAt: {
-      type: DataTypes.DATE(),
+      type: DataTypes.DATE,
       allowNull: true,
       defaultValue: null,
     },

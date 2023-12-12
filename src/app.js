@@ -4,12 +4,14 @@ import { AppError } from './common/utils/errors/appError.js';
 import { globalErrorHandler } from './common/utils/errors/errors.controlers.js';
 import morgan from 'morgan';
 import { envs } from './config/enviroments/enviroments.js';
+import { enableCors } from './config/pluggins/cors.pluggin.js';
 
 const app = express();
 const ACCEPTED_ORIGINS = [
   'http://localhost:8080',
   'http://localhost:8080',
   'http://localhost:5137',
+  'http://localhost:3000',
 ];
 
 app.use(express.json());

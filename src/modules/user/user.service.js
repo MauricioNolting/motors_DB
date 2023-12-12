@@ -31,6 +31,15 @@ class UsersServices {
     });
   }
 
+  static async findOneByEmail(email) {
+    return await Users.findOne({
+      where: {
+        status: 'avaible',
+        email,
+      },
+    });
+  }
+
   static async update(user, data) {
     return await user.update(data);
   }

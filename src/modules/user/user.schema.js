@@ -20,6 +20,17 @@ const userRegisterSchema = z.object({
   role: z.enum(['employee', 'client']),
 });
 
+const loginUserSchema = z.object({
+  email: z.string().email({ message: 'Invalid email' }),
+  password: z
+    .string({
+      invalid_type_error: 'password must be a string',
+      required_error: 'password is require',
+    })
+    .min(8, { message: 'Password is too short(8 min)' })
+    .max(15, { message: 'Password is too long(15 max)' }),
+});
+
 export function validateUser(data) {
   const result = userRegisterSchema.safeParse(data);
 
@@ -38,6 +49,22 @@ export function validateUser(data) {
 
 export function validatePartialUser(data) {
   const result = userRegisterSchema.partial().safeParse(data);
+
+  const {
+    hasError,
+    errorMessages,
+    data: userData,
+  } = extractValidationData(result);
+
+  return {
+    hasError,
+    errorMessages,
+    userData,
+  };
+}
+
+export function validateLogin(data) {
+  const result = loginUserSchema.safeParse(data);
 
   const {
     hasError,

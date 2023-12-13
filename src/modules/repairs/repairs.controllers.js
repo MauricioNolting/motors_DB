@@ -4,10 +4,18 @@ import { validatePartialRepair, validateRepair } from './repairs.schema.js';
 import RepairsServices from './repairs.services.js';
 
 const findAll = catchAsync(async (req, res, next) => {
-  const findAllRepairs = await RepairsServices.findAll();
+  const { hasError, errorMessages, repairData } = validatePendingRepairs(
+    req.body
+  );
+  if (hasError) {
+    return res.status(422).json({
+      status: 'error',
+      message: errorMessages,
+    });
+  }
 
   return res.status(200).json({
-    findAllRepairs,
+    repairData,
   });
 });
 

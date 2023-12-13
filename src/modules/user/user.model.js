@@ -22,11 +22,10 @@ export const Users = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-
     role: {
       type: DataTypes.ENUM('employee', 'client'),
       allowNull: false,
-      defaultValue: 'client',
+      defaultValue: 'employee',
     },
     passwordChangedAt: {
       type: DataTypes.DATE,

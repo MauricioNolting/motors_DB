@@ -27,6 +27,28 @@ export const validateUser = async (req, res, next) => {
   }
 };
 
+export const userPending = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await UsersServices.findOne(id);
+
+    if (!user) {
+      return next(new AppError(`User id: ${id} not found`, 404));
+    }
+
+    req.user = user;
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'fail',
+      message: error,
+    });
+  }
+};
+
 export const protect = catchAsync(async (req, res, next) => {
   //1. obtener el token
   let token;

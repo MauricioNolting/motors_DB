@@ -21,6 +21,14 @@ class RepairsServices {
     });
   }
 
+  static async findAllByStatusPending(status) {
+    return await Repairs.findOne({
+      where: {
+        status: 'pending',
+      },
+    });
+  }
+
   static async findOneCompleted(id) {
     return await Repairs.findOne({
       where: {

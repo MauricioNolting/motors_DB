@@ -2,6 +2,14 @@ import { envs } from '../../../config/enviroments/enviroments.js';
 import { AppError } from './appError.js';
 import { Error } from './error.Model.js';
 
+const handleJWTError = () => {
+  return new AppError('JWT is incorrect, please login again', 401);
+};
+
+const handleJWTExpired = () => {
+  return new AppError('JWT was expired!', 401);
+};
+
 const handleCastError23505 = () => {
   return new AppError('Duplicate field value: write other value', 409);
 };
@@ -55,6 +63,10 @@ export const globalErrorHandler = (err, req, res, next) => {
     if (err.parent?.code === '23505') error = handleCastError23505();
 
     if (err.parent?.code === '22P02') error = handleCastError22P02();
+
+    if (err.name === 'TokenExpiredError') error = handleJWTExpired();
+
+    if (err.name === 'JsonWebTokenError') error = handleJWTError();
 
     sendErrorProd(error, res);
   }

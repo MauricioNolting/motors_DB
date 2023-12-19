@@ -4,18 +4,10 @@ import { validatePartialRepair, validateRepair } from './repairs.schema.js';
 import RepairsServices from './repairs.services.js';
 
 const findAll = catchAsync(async (req, res, next) => {
-  const { hasError, errorMessages, repairData } = validatePendingRepairs(
-    req.body
-  );
-  if (hasError) {
-    return res.status(422).json({
-      status: 'error',
-      message: errorMessages,
-    });
-  }
+  const findAllRepairs = await RepairsServices.findAll();
 
   return res.status(200).json({
-    repairData,
+    findAllRepairs,
   });
 });
 
@@ -28,13 +20,13 @@ const create = catchAsync(async (req, res, next) => {
     });
   }
 
-  const findUserId = await UsersServices.findOne(repairData.userId);
-  if (!findUserId) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'User id dont exist',
-    });
-  }
+  // const findUserId = await UsersServices.findOne(repairData.userId);
+  // if (!findUserId) {
+  //   return res.status(400).json({
+  //     status: 'error',
+  //     message: 'User id dont exist',
+  //   });
+  // }
   const newRepair = await RepairsServices.create(repairData);
 
   return res.status(201).json({

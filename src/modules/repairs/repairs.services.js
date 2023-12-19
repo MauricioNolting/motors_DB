@@ -1,3 +1,4 @@
+import { Users } from '../user/user.model.js';
 import Repairs from './repairs.model.js';
 
 class RepairsServices {
@@ -8,8 +9,14 @@ class RepairsServices {
   static async findAll() {
     return await Repairs.findAll({
       where: {
-        status: 'pending',
+        status: ['pending', 'completed'],
       },
+      include: [
+        {
+          model: Users,
+          attributes: ['name', 'email', 'status'],
+        },
+      ],
     });
   }
 
@@ -17,15 +24,21 @@ class RepairsServices {
     return await Repairs.findOne({
       where: {
         id: id,
-      },
-    });
-  }
-
-  static async findAllByStatusPending(status) {
-    return await Repairs.findOne({
-      where: {
         status: 'pending',
       },
+      include: [
+        {
+          model: Users,
+          attributes: {
+            exclude: [
+              'password',
+              'passwordChangedAt',
+              'createdAt',
+              'updatedAt',
+            ],
+          },
+        },
+      ],
     });
   }
 

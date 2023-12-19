@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { Users } from './user.model.js';
+import Repairs from '../repairs/repairs.model.js';
 
 class UsersServices {
   static async create(data) {
@@ -11,6 +12,20 @@ class UsersServices {
       where: {
         status: 'avaible',
       },
+      attributes: {
+        exclude: [
+          'password',
+          'passwordChangedAt',
+          'createdAt',
+          'updatedAt',
+          'status',
+        ],
+      },
+      include: [
+        {
+          model: Repairs,
+        },
+      ],
     });
   }
 

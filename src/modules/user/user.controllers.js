@@ -53,10 +53,7 @@ const create = catchAsync(async (req, res, next) => {
   return res.status(201).json({
     token,
     user: {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
+      newUser,
     },
   });
 });
@@ -156,7 +153,7 @@ const changePassword = catchAsync(async (req, res, next) => {
   );
 
   if (!isCorrectPassword) {
-    return next(new AppError('Incorrect email or password', 401));
+    return next(new AppError('Incorrect password', 401));
   }
 
   //5. encripar la nueva contrase;a

@@ -16,13 +16,3 @@ export const validateRepairs = catchAsync(async (req, res, next) => {
   req.repair = repair;
   next();
 });
-
-export const validatePendingRepairs = catchAsync(async (req, res, next) => {
-  const findAllRepairs = await RepairsServices.findAllByStatusPending();
-
-  req.repairsPending = findAllRepairs;
-  return res.status(200).json({
-    findAllRepairs,
-  });
-  next();
-});

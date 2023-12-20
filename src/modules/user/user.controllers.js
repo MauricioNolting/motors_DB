@@ -14,7 +14,6 @@ import UsersServices from './user.service.js';
 
 const findAll = catchAsync(async (req, res, next) => {
   const findAllUsers = await UsersServices.findAll();
-
   return res.status(200).json({
     findAllUsers,
   });
